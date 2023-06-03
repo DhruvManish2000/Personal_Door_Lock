@@ -1,25 +1,15 @@
-/* 
- * File:   hd44780.h
- * Author: Max Eberle and Dhruv Pranlal
+/*
+ * ----------------------------------------------------------------------------
+ * "THE BEER-WARE LICENSE" (Revision 42):
+ * <joerg@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
+ * can do whatever you want with this stuff. If we meet some day, and you think
+ * this stuff is worth it, you can buy me a beer in return.        Joerg Wunsch
+ * ----------------------------------------------------------------------------
  *
- * Created on June 2, 2023, 9:24 PM
+ * HD44780 LCD display driver
+ *
+ * $Id: hd44780.h 2002 2009-06-25 20:21:16Z joerg_wunsch $
  */
-
-#ifndef HD44780_H
-#define	HD44780_H
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-
-
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* HD44780_H */
 
 /*
  * Send byte b to the LCD.  rs is the RS signal (register select), 0

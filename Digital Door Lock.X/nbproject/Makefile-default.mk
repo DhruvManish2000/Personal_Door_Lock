@@ -110,14 +110,14 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/903fb7fed9d074980b2c399ba51e8314e3b7a1d .generated_files/flags/default/c5d2f1d8b7ed1ba22adc1e83b78317b8fcc4d874
+${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/79bb0af7c7116a84430106a0c2da262672c94418 .generated_files/flags/default/c5d2f1d8b7ed1ba22adc1e83b78317b8fcc4d874
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
 	 ${MP_CC}  $(MP_EXTRA_CC_PRE) -mmcu=atmega328p ${PACK_COMPILER_OPTIONS} ${PACK_COMMON_OPTIONS} -g -DDEBUG  -gdwarf-2  -x c -c -D__$(MP_PROCESSOR_OPTION)__  -funsigned-char -funsigned-bitfields -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -Wall -MD -MP -MF "${OBJECTDIR}/main.o.d" -MT "${OBJECTDIR}/main.o.d" -MT ${OBJECTDIR}/main.o  -o ${OBJECTDIR}/main.o main.c  -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD) 
 	
 else
-${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/1e71e14cb668370f0cde600c9171960746c16161 .generated_files/flags/default/c5d2f1d8b7ed1ba22adc1e83b78317b8fcc4d874
+${OBJECTDIR}/main.o: main.c  .generated_files/flags/default/f65a518d30924fab8d184129ee6d24055e9b8af7 .generated_files/flags/default/c5d2f1d8b7ed1ba22adc1e83b78317b8fcc4d874
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 

@@ -17,7 +17,7 @@
 #include <util/delay.h>
 #include "lcd.h"
 
-#define CODE_SIZE 4
+#define CODE_SIZE 4 // Global variable that can be changed later
 
 /*
  * 
@@ -30,6 +30,7 @@ void code_attempt(uint8_t *buffer, int count);
 int check_code(uint8_t *code, uint8_t *input, int count);
 
 // Hard-coded the solution for now
+// Coming soon: function to set the code
 uint8_t code[CODE_SIZE] = {1,1,1,1};
 int result;
 
@@ -38,8 +39,8 @@ int main(int argc, char** argv) {
     // Setup ports
     initialize();
     
+    // Setup LCD (does this need to be called in while loop to refresh?)
     lcd_init();
-    
     
     while(1) {
         
@@ -49,8 +50,9 @@ int main(int argc, char** argv) {
         
         if(result==CODE_SIZE) { // Correct code entered
             PORTD |= (1<<PORTD3); // Turn on motor to unlock door
+            //Coming soon: use timer or oscillator to output signal for ESC
         }
-        else {
+        else { // Incorrect code refreshes LCD
             lcd_init();
         }
     }
@@ -91,12 +93,16 @@ void initialize() {
 
 void code_attempt(uint8_t *buffer, int count) {
     
-    _delay_ms(200);
-    
     for(int i=0; i<count; i++) {
         
         while(1) {
             
+            /* General method of this loop: 
+             * 1. Detect button press
+             * 2. Add number to array
+             * 3. Display number on LCD
+             * 4. Break and enter new iteration of for loop
+             */ 
             if(!(PINC & (1<<PINC0))) { // 1 is pressed
                 _delay_ms(200);
                 buffer[i] = 1;
@@ -139,8 +145,8 @@ int check_code(uint8_t *code, uint8_t *input, int count) {
         
         if(code[i] != input[i]) {
             _delay_ms(200);
-            lcd_init();
-            fprintf(stderr, "C \x1b\xc0      \x58");
+            lcd_init(); // Refresh LCD (wipe code off screen)
+            fprintf(stderr, "C \x1b\xc0      \x58"); // Display 'X'
             break;
         }
         else {
@@ -148,5 +154,5 @@ int check_code(uint8_t *code, uint8_t *input, int count) {
             continue;
         }
     }
-    return(k);
+    return(k); // Idea here is to return the size of the code if correct
 }

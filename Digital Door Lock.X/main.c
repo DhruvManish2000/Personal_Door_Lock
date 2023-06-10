@@ -4,7 +4,10 @@
  *
  * Created on May 23, 2023, 12:46 PM
  * 
- * Project on the ATMega328P
+ * Summary: Project on the ATMega328P that uses keypad input (from pushbuttons) 
+ * to enter a code that is displayed on an HD44780 based LCD. The correct code
+ * unlocks a door by sending a signal to activate a DC motor.
+ * 
  */
 
 #define F_CPU 1000000UL

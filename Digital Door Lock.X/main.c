@@ -20,62 +20,85 @@
 #include <util/delay.h>
 #include "lcd.h"
 
-#define CODE_SIZE 4 // Global variable that can be changed later
-
+#define MAX_SIZE 16 // Character limit of one LCD line
 /*
  * 
  */
 
 FILE lcd_str = FDEV_SETUP_STREAM(lcd_putchar, NULL, _FDEV_SETUP_WRITE);
 
-void initialize();
-void code_attempt(uint8_t *buffer, int count);
-int check_code(uint8_t *code, uint8_t *input, int count);
+// Function prototypes
+void port_init();
+int code_attempt(uint8_t *buffer, int *count);
+void check_code(uint8_t *code, uint8_t *input, int size);
+void unlock_door();
 
-// Hard-coded the solution for now
-// Coming soon: function to set the code
-uint8_t code[CODE_SIZE] = {1,1,1,1};
-int result;
+//void set_code(uint8_t *code, int size); // Set code function
+
 
 int main(int argc, char** argv) {
     
-    // Setup ports
-    initialize();
+    // Initialize ports
+    port_init();
     
-    // Setup LCD (does this need to be called in while loop to refresh?)
+    // Initialize LCD
     lcd_init();
+    
+    
+    int input_counter;
+    int code_size = 4;
+    int input_size;
+    
+    uint8_t code[code_size] = {1,1,1,1}; // Hard-coded the password for now
+    
+    // Set password
+//    uint8_t code[code_size] = {0};
+//    set_code(code, code_size);
+//    code_size = sizeof(code)/sizeof(code[0]);
+    
     
     while(1) {
         
-        uint8_t input[CODE_SIZE] = {0};
-        code_attempt(input, CODE_SIZE);
-        result = check_code(code, input, CODE_SIZE);
+        // Display "Code + Enter:" on LCD - maybe use a function?
         
-        if(result==CODE_SIZE) { // Correct code entered
-            PORTD |= (1<<PORTD3); // Turn on motor to unlock door
-            //Coming soon: use timer or oscillator to output signal for ESC
+        uint8_t input[MAX_SIZE] = {0};
+        input_counter = 0;
+        
+        input_size = code_attempt(input, input_counter);
+        
+        if (input_size == code_size) {
+            
+            check_code(code, input, code_size);
         }
-        else { // Incorrect code refreshes LCD
-            lcd_init();
+        else {
+            
+            // [Function to display incorrect message]
         }
     }
     
     return (0);
 }
 
-void initialize() {
-    // Initialize keypad button ports for input
-    DDRC &= ~(1<<DDC0); // SW1
-    DDRC &= ~(1<<DDC1); // SW2
-    DDRC &= ~(1<<DDC2); // SW3
-    DDRC &= ~(1<<DDC3); // SW4
-    DDRC &= ~(1<<DDC4); // SW5
-//    DDRC &= ~(1<<DDC5); // SW6
-//    DDRB &= ~(1<<DDB0); // SW7
-//    DDRB &= ~(1<<DDB1); // SW8
-//    DDRB &= ~(1<<DDB2); // SW9
-//    DDRB &= ~(1<<DDB6); // SW0
-//    DDRB &= ~(1<<DDB7); // SW Reset
+void port_init() {
+    
+    // Initialize keypad ports to input
+    DDRC &= ~(1<<DDC0); // Keypad '1'
+    DDRC &= ~(1<<DDC1); // Keypad '2'
+    DDRC &= ~(1<<DDC2); // Keypad '3'
+    DDRC &= ~(1<<DDC3); // Keypad '4'
+    DDRC &= ~(1<<DDC4); // Keypad '5'
+    DDRC &= ~(1<<DDC5); // Keypad '6'
+    
+    DDRB &= ~(1<<DDB0); // Keypad '7'
+    DDRB &= ~(1<<DDB1); // Keypad '8'
+    DDRB &= ~(1<<DDB2); // Keypad '9'
+    
+    DDRD &= ~(1<<DDD2); // Keypad '0'
+    DDRD &= ~(1<<DDD3); // Keypad 'ENTER'
+    
+    // Initialize motor signal ports to output
+    DDRB |= (1<<DDB6); // Motor+
+    DDRB |= (1<<DDB7); // Motor-
     
     // Turn on keypad port pull-ups (active high)
     PORTC |= (1<<PORTC0);
@@ -83,79 +106,155 @@ void initialize() {
     PORTC |= (1<<PORTC2);
     PORTC |= (1<<PORTC3);
     PORTC |= (1<<PORTC4);
-//    PORTC |= (1<<PORTC5);
-//    PORTB |= (1<<PORTB0);
-//    PORTB |= (1<<PORTB1);
-//    PORTB |= (1<<PORTB2);
-//    PORTB |= (1<<PORTB6);
-//    PORTB |= (1<<PORTB7);
+    PORTC |= (1<<PORTC5);
     
-    //Initialize motor port to output
-    DDRD |= (1<<DDD3);
+    PORTB |= (1<<PORTB0);
+    PORTB |= (1<<PORTB1);
+    PORTB |= (1<<PORTB2);
+    
+    PORTD |= (1<<PORTD2);
+    PORTD |= (1<<PORTD3);
+    
+    // Set motor signal ports to output low
+    PORTB &= ~(1<<PORTB6);
+    PORTB &= ~(1<<PORTB7);
+    
+    return;
 }
 
-void code_attempt(uint8_t *buffer, int count) {
+int code_attempt(uint8_t *buffer, int count) {
     
-    for(int i=0; i<count; i++) {
+    /* This function takes the memory location of 'buffer' so it can edit the
+     * 'input' array values in the main function
+     */
+    
+    int input_size = 0;
+    
+    while (count < MAX_SIZE) {
         
-        while(1) {
-            
-            /* General method of this loop: 
-             * 1. Detect button press
-             * 2. Add number to array
-             * 3. Display number on LCD
-             * 4. Break and enter new iteration of for loop
-             */ 
-            if(!(PINC & (1<<PINC0))) { // 1 is pressed
-                _delay_ms(200);
-                buffer[i] = 1;
-                fprintf(stderr, "C \x1b\xc0      \x31");
-                break;
-            }
-            if(!(PINC & (1<<PINC1))) { // 2 is pressed
-                _delay_ms(200);
-                buffer[i] = 2;
-                fprintf(stderr, "C \x1b\xc0      \x32");
-                break;
-            }
-            if(!(PINC & (1<<PINC2))) { // 3 is pressed
-                _delay_ms(200);
-                buffer[i] = 3;
-                fprintf(stderr, "C \x1b\xc0      \x33");
-                break;
-            }
-            if(!(PINC & (1<<PINC3))) { // 4 is pressed
-                _delay_ms(200);
-                buffer[i] = 4;
-                fprintf(stderr, "C \x1b\xc0      \x34");
-                break;
-            }
-            if(!(PINC & (1<<PINC4))) { // 5 is pressed
-                _delay_ms(200);
-                buffer[i] = 5;
-                fprintf(stderr, "C \x1b\xc0      \x35");
-                break;
-            }
+        if (!(PIND & (1<<PIND3))) { // 'ENTER' is pressed
+            _delay_ms(250);
+            input_size = count;
+            count = MAX_SIZE; 
+            break;
+            // This way, the length of the code can be variable and the program
+            // doesn't continue until the 'ENTER' key is pressed
+        }
+        
+        if (!(PIND & (1<<PIND2))) { // '0' is pressed
+            _delay_ms(250);
+            buffer[count] = 0;
+            // [Function to display '0' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC0))) { // '1' is pressed
+            _delay_ms(250);
+            buffer[count] = 1;
+            // [Function to display '1' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC1))) { // '2' is pressed
+            _delay_ms(250);
+            buffer[count] = 2;
+            // [Function to display '2' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC2))) { // '3' is pressed
+            _delay_ms(250);
+            buffer[count] = 3;
+            // [Function to display '3' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC3))) { // '4' is pressed
+            _delay_ms(250);
+            buffer[count] = 4;
+            // [Function to display '4' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC4))) { // '5' is pressed
+            _delay_ms(250);
+            buffer[count] = 5;
+            // [Function to display '5' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINC & (1<<PINC5))) { // '6' is pressed
+            _delay_ms(250);
+            buffer[count] = 6;
+            // [Function to display '6' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINB & (1<<PINB0))) { // '7' is pressed
+            _delay_ms(250);
+            buffer[count] = 7;
+            // [Function to display '7' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINB & (1<<PINB1))) { // '8' is pressed
+            _delay_ms(250);
+            buffer[count] = 8;
+            // [Function to display '8' in the 'count' position of the LCD]
+            count++;
+        }
+        
+        if (!(PINB & (1<<PINB2))) { // '9' is pressed
+            _delay_ms(250);
+            buffer[count] = 9;
+            // [Function to display '9' in the 'count' position of the LCD]
+            count++;
         }
     }
+    
+    return input_size;
 }
 
-int check_code(uint8_t *code, uint8_t *input, int count) {
+void check_code(uint8_t *code, uint8_t *input, int size) {
     
-    int k = 0;
+    int correct = 0;
     
-    for(int i=0; i<count; i++) {
-        
-        if(code[i] != input[i]) {
-            _delay_ms(200);
-            lcd_init(); // Refresh LCD (wipe code off screen)
-            fprintf(stderr, "C \x1b\xc0      \x58"); // Display 'X'
+    for (int i = 0; i < size; i++ ) {
+
+        if (input[i] != code[i]) {
+
+            // [Function to display incorrect message]
             break;
         }
         else {
-            k++;
+            correct++;
             continue;
         }
     }
-    return(k); // Idea here is to return the size of the code if correct
+    
+    if (correct == size) {
+        
+        // [Function to display correct message]
+        // Ask if user wants to reset code
+        // If yes, function to reset code
+        
+        unlock_door();
+    }
+    
+    return;
 }
+
+void unlock_door() {
+    
+    // Set PD6 and PD7 to oscillate so motor driver unlocks door
+    _delay_ms(10000); // 10 second delay
+    // Set PD6 and PD7 to oscillate so motor driver locks door
+    
+    return;
+}
+
+//void set_code(uint8_t *code, int size) {
+//    
+//    // Function to set/reset code
+//    return;
+//}

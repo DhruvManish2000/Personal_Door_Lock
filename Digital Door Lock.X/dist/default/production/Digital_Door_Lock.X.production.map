@@ -27,19 +27,20 @@ Discarded input sections
  .text          0x00000000        0x0 build/default/production/main.o
  .data          0x00000000        0x0 build/default/production/main.o
  .bss           0x00000000        0x0 build/default/production/main.o
- .data.lcd_str  0x00000000        0xe build/default/production/main.o
+ .text.code_attempt
+                0x00000000      0x16c build/default/production/main.o
+ .text.check_code
+                0x00000000       0x48 build/default/production/main.o
+ .text.unlock_door
+                0x00000000       0x14 build/default/production/main.o
  .text          0x00000000        0x0 build/default/production/hd44780.o
  .data          0x00000000        0x0 build/default/production/hd44780.o
  .bss           0x00000000        0x0 build/default/production/hd44780.o
  .text.hd44780_powerdown
-                0x00000000        0xe build/default/production/hd44780.o
+                0x00000000        0xc build/default/production/hd44780.o
  .text          0x00000000        0x0 build/default/production/lcd.o
  .data          0x00000000        0x0 build/default/production/lcd.o
  .bss           0x00000000        0x0 build/default/production/lcd.o
- .text.lcd_putchar
-                0x00000000       0x4c build/default/production/lcd.o
- .bss.esc_seen.1954
-                0x00000000        0x1 build/default/production/lcd.o
  .text          0x00000000        0x0 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .data          0x00000000        0x0 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  .bss           0x00000000        0x0 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
@@ -252,7 +253,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3aa
+.text           0x00000000      0x348
  *(.vectors)
  .vectors       0x00000000       0x68 D:/Microchip/packs/Microchip/ATmega_DFP/2.3.126/gcc/dev/atmega328p/avr5/crtatmega328p.o
                 0x00000000                __vector_default
@@ -339,43 +340,42 @@ END GROUP
                 0x000000a2                __vector_20
                 0x000000a6                . = ALIGN (0x2)
  *(.text.*)
- .text.keypad   0x000000a6       0x16 build/default/production/main.o
-                0x000000a6                keypad
- .text.main     0x000000bc       0xd8 build/default/production/main.o
-                0x000000bc                main
+ .text.port_init
+                0x000000a6       0x36 build/default/production/main.o
+                0x000000a6                port_init
+ .text.main     0x000000dc       0x3e build/default/production/main.o
+                0x000000dc                main
  .text.hd44780_outnibble
-                0x00000194       0x22 build/default/production/hd44780.o
- .text.hd44780_innibble
-                0x000001b6       0x28 build/default/production/hd44780.o
+                0x0000011a       0x20 build/default/production/hd44780.o
  .text.hd44780_outbyte
-                0x000001de       0x20 build/default/production/hd44780.o
-                0x000001de                hd44780_outbyte
- .text.hd44780_inbyte
-                0x000001fe       0x1e build/default/production/hd44780.o
-                0x000001fe                hd44780_inbyte
+                0x0000013a       0x20 build/default/production/hd44780.o
+                0x0000013a                hd44780_outbyte
  .text.hd44780_wait_ready
-                0x0000021c        0xc build/default/production/hd44780.o
-                0x0000021c                hd44780_wait_ready
+                0x0000015a       0x1c build/default/production/hd44780.o
+                0x0000015a                hd44780_wait_ready
  .text.hd44780_init
-                0x00000228       0x78 build/default/production/hd44780.o
-                0x00000228                hd44780_init
+                0x00000176       0x7c build/default/production/hd44780.o
+                0x00000176                hd44780_init
  .text.lcd_init
-                0x000002a0       0x30 build/default/production/lcd.o
-                0x000002a0                lcd_init
+                0x000001f2       0x30 build/default/production/lcd.o
+                0x000001f2                lcd_init
+ .text.lcd_putchar
+                0x00000222       0x4c build/default/production/lcd.o
+                0x00000222                lcd_putchar
  .text.avr-libc
-                0x000002d0       0x68 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fwrite.o)
-                0x000002d0                fwrite
+                0x0000026e       0x68 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(fwrite.o)
+                0x0000026e                fwrite
  .text.libgcc.prologue
-                0x00000338       0x38 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
-                0x00000338                __prologue_saves__
+                0x000002d6       0x38 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_prologue.o)
+                0x000002d6                __prologue_saves__
  .text.libgcc.prologue
-                0x00000370       0x36 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
-                0x00000370                __epilogue_restores__
-                0x000003a6                . = ALIGN (0x2)
+                0x0000030e       0x36 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_epilogue.o)
+                0x0000030e                __epilogue_restores__
+                0x00000344                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003a6        0x0 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000003a6                _exit
-                0x000003a6                exit
+ .fini9         0x00000344        0x0 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x00000344                _exit
+                0x00000344                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -394,40 +394,45 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003a6        0x4 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x00000344        0x4 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003aa                _etext = .
+                0x00000348                _etext = .
 
-.data           0x00800100       0x30 load address 0x000003aa
+.data           0x00800100       0x14 load address 0x00000348
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
+ .data.lcd_str  0x00800100        0xe build/default/production/main.o
+                0x00800100                lcd_str
  *(.gnu.linkonce.d*)
  *(.rodata)
  *(.rodata*)
  .rodata.str1.1
-                0x00800100       0x30 build/default/production/main.o
+                0x0080010e        0x5 build/default/production/main.o
  *(.gnu.linkonce.r*)
-                0x00800130                . = ALIGN (0x2)
-                0x00800130                _edata = .
-                0x00800130                PROVIDE (__data_end, .)
+                0x00800114                . = ALIGN (0x2)
+ *fill*         0x00800113        0x1 
+                0x00800114                _edata = .
+                0x00800114                PROVIDE (__data_end, .)
 
-.bss            0x00800130        0x6
-                0x00800130                PROVIDE (__bss_start, .)
+.bss            0x00800114        0x7
+                0x00800114                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
+ .bss.esc_seen.1952
+                0x00800114        0x1 build/default/production/lcd.o
  *(COMMON)
- COMMON         0x00800130        0x6 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(iob.o)
-                0x00800130                __iob
-                0x00800136                PROVIDE (__bss_end, .)
-                0x000003aa                __data_load_start = LOADADDR (.data)
-                0x000003da                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800115        0x6 d:/microchip/avr8-gnu-toolchain-win32_x86/bin/../lib/gcc/avr/5.4.0/../../../../avr/lib/avr5\libc.a(iob.o)
+                0x00800115                __iob
+                0x0080011b                PROVIDE (__bss_end, .)
+                0x00000348                __data_load_start = LOADADDR (.data)
+                0x0000035c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800136        0x0
+.noinit         0x0080011b        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x00800136                _end = .
+                0x0080011b                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0

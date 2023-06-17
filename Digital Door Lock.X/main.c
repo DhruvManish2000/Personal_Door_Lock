@@ -10,11 +10,10 @@
  * 
  */
 
-#define F_CPU 1000000UL
 #include "defines.h"
-#include <stdio.h>
-#include <stdint.h>
 #include <ctype.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
@@ -29,7 +28,7 @@ FILE lcd_str = FDEV_SETUP_STREAM(lcd_putchar, NULL, _FDEV_SETUP_WRITE);
 
 // Function prototypes
 void port_init();
-int code_attempt(uint8_t *buffer, int *count);
+int code_attempt(uint8_t *buffer, int count);
 void check_code(uint8_t *code, uint8_t *input, int size);
 void unlock_door();
 
@@ -44,19 +43,25 @@ int main(int argc, char** argv) {
     // Initialize LCD
     lcd_init();
     
+//    int input_counter;
+//    int code_size = 4;
+//    int input_size;
     
-    int input_counter;
-    int code_size = 4;
-    int input_size;
+    // Test code
+    while (1) {
+        stderr = &lcd_str;
+        fprintf(stderr, "C \x1b\xc0");
+        _delay_ms(500);
+    }
     
-    uint8_t code[code_size] = {1,1,1,1}; // Hard-coded the password for now
+//    uint8_t code[code_size] = {1,1,1,1}; // Hard-coded the password for now
     
     // Set password
 //    uint8_t code[code_size] = {0};
 //    set_code(code, code_size);
 //    code_size = sizeof(code)/sizeof(code[0]);
     
-    
+    /*
     while(1) {
         
         // Display "Code + Enter:" on LCD - maybe use a function?
@@ -74,7 +79,8 @@ int main(int argc, char** argv) {
             
             // [Function to display incorrect message]
         }
-    }
+    } 
+    */
     
     return (0);
 }

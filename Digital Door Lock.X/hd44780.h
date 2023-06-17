@@ -22,7 +22,7 @@ void	hd44780_outbyte(uint8_t b, uint8_t rs);
  * selects busy flag (bit 7) and address counter, 1 selects the data
  * register.
  */
-uint8_t	hd44780_inbyte(uint8_t rs);
+//uint8_t	hd44780_inbyte(uint8_t rs);
 
 /*
  * Wait for the busy flag to clear.
@@ -47,10 +47,10 @@ void	hd44780_powerdown(void);
 #define hd44780_outdata(n)	hd44780_outbyte((n), 1)
 
 /* Read the address counter and busy flag from the LCD. */
-#define hd44780_incmd()		hd44780_inbyte(0)
+//#define hd44780_incmd()		hd44780_inbyte(0)
 
 /* Read the current data byte from the LCD. */
-#define hd44780_indata()	hd44780_inbyte(1)
+//#define hd44780_indata()	hd44780_inbyte(1)
 
 
 /* Clear LCD display command. */

@@ -100,7 +100,7 @@ hd44780_pulse_e(bool readback)
 static void
 hd44780_outnibble(uint8_t n, uint8_t rs)
 {
-  CLR(PORT, HD44780_RW);
+//  CLR(PORT, HD44780_RW);
   if (rs)
     SET(PORT, HD44780_RS);
   else
@@ -123,7 +123,7 @@ hd44780_outbyte(uint8_t b, uint8_t rs)
 /*
  * Read one nibble from the LCD controller.
  */
-static uint8_t
+/*static uint8_t
 hd44780_innibble(uint8_t rs)
 {
   uint8_t x;
@@ -139,12 +139,12 @@ hd44780_innibble(uint8_t rs)
   CLR(PORT, HD44780_RW);
 
   return x;
-}
+}*/
 
 /*
  * Read one byte (i.e. two nibbles) from the LCD controller.
  */
-uint8_t
+/*uint8_t
 hd44780_inbyte(uint8_t rs)
 {
   uint8_t x;
@@ -153,7 +153,7 @@ hd44780_inbyte(uint8_t rs)
   x |= hd44780_innibble(rs);
 
   return x;
-}
+}*/
 
 /*
  * Wait until the busy flag is cleared.
@@ -183,7 +183,7 @@ void
 hd44780_init(void)
 {
   SET(DDR, HD44780_RS);
-  SET(DDR, HD44780_RW);
+//  SET(DDR, HD44780_RW);
   SET(DDR, HD44780_E);
   ASSIGN(DDR, HD44780_D4, 0x0F);
 
@@ -211,7 +211,7 @@ hd44780_powerdown(void)
 {
   ASSIGN(PORT, HD44780_D4, 0);
   CLR(PORT, HD44780_RS);
-  CLR(PORT, HD44780_RW);
+//  CLR(PORT, HD44780_RW);
   CLR(PORT, HD44780_E);
 }
 
